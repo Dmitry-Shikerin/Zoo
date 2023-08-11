@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Зоопарк
 {
@@ -11,8 +8,6 @@ namespace Зоопарк
         static void Main(string[] args)
         {
             Zoo zoo = new Zoo();
-
-            zoo.CreateAviarys();
 
             zoo.Work();
         }
@@ -39,9 +34,9 @@ namespace Зоопарк
 
     class AnimalFactory
     {
-        //сделать свойство каунта
+        public int AnimalsCount { get; private set; }
 
-        public Animal CreateRandom(int index/*, out int animalsCount*/)
+        public Animal CreateRandom(int index)
         {
             string[] genders = { "Мальчик", "Девочка" };
 
@@ -58,7 +53,7 @@ namespace Зоопарк
                 new Animal("Ястреб", genders[randomGender], "Каррррррррррр"),
             };
 
-            //animalsCount = animals.Count;
+            AnimalsCount = animals.Count;
 
             return animals[index];
         }
@@ -92,8 +87,8 @@ namespace Зоопарк
         {
             List<Animal> animals = new List<Animal>();
 
-            int animalsCount = 6;
-            int randomIndex = Utils.GetRandomValue(animalsCount);
+            //int animalsCount = 6;
+            int randomIndex = Utils.GetRandomValue(_animalFactory.AnimalsCount);
 
             int minAvairySize = 3;
             int maxAvairySize = 7;
@@ -111,8 +106,6 @@ namespace Зоопарк
 
     class Zoo
     {
-        //private List<Animal> _animals = new List<Animal>();
-
         private AviaryFaсtory _aviaryFaсtory = new AviaryFaсtory();
 
         private List<Aviary> _aviarys = new List<Aviary>();
@@ -131,23 +124,42 @@ namespace Зоопарк
 
         public void Work()
         {
-            //_aviaryFaсtory.CreateRandom();
+            CreateAviarys();
 
-            for (int i = 0; i < _aviarys.Count; i++)
+            do
             {
-                Console.WriteLine($"Подойти к вальеру номер {i + 1}");
-            }
+                Console.Clear();
 
-            int aviaryIndex = ReadIndex() - 1;
+                for (int i = 0; i < _aviarys.Count; i++)
+                {
+                    Console.WriteLine($"Подойти к вальеру номер {i + 1}");
+                }
 
-            for (int i = 0; i < _aviarys[aviaryIndex].Animals.Count; i++)  //Правильно ли я обращаюсь?
-            {
+                int aviaryIndex = ReadIndex() - 1;
+
                 _aviarys[aviaryIndex].ShowInfo();
             }
-
+            while (TryExite() == false);
         }
 
-        static int ReadIndex()
+        private bool TryExite()
+        {
+            bool result = false;
+            string completeProgram = "exit";
+
+            Console.WriteLine($"Для завершения программы введите - {completeProgram}");
+            string userInput = Console.ReadLine();
+
+            if (userInput == completeProgram)
+            {
+                result = true;
+                return result;
+            }
+
+            return result;
+        }
+
+        private int ReadIndex()
         {
             int number = 0;
 
