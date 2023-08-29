@@ -15,10 +15,10 @@ namespace Зоопарк
 
     class Animal
     {
-        public Animal(string name, string gender, string sound)
+        public Animal(string name, string sound)
         {
             Name = name;
-            Gender = gender;
+            Gender = AnimalFactory.CreateRandomGender();
             Sound = sound;
         }
 
@@ -34,29 +34,49 @@ namespace Зоопарк
 
     class AnimalFactory
     {
-        public int AnimalsCount { get; private set; }
+        private List<Animal> _animals;
 
-        public Animal CreateRandom(int index)
+        public AnimalFactory()
+        {
+            _animals = new List<Animal>()
+            {
+                new Animal("Горилла", "Бьет в грудь"),
+                new Animal("Тигр", "Ррраааау"),
+                new Animal("Лошадь", "Иииигого"),
+                new Animal("Змея", "Шшшшссссссссс"),
+                new Animal("Кролик", "Хрум-Хрум"),
+                new Animal("Ястреб", "Каррррррррррр"),
+            };
+        }
+
+        public static string CreateRandomGender()
         {
             string[] genders = { "Мальчик", "Девочка" };
 
             int randomGender = Utils.GetRandomValue(genders.Length);
 
-
-            List<Animal> animals = new List<Animal>()
-            {
-                new Animal("Горилла", genders[randomGender], "Бьет в грудь"),
-                new Animal("Тигр", genders[randomGender], "Ррраааау"),
-                new Animal("Лошадь", genders[randomGender], "Иииигого"),
-                new Animal("Змея", genders[randomGender], "Шшшшссссссссс"),
-                new Animal("Кролик", genders[randomGender], "Хрум-Хрум"),
-                new Animal("Ястреб", genders[randomGender], "Каррррррррррр"),
-            };
-
-            AnimalsCount = animals.Count;
-
-            return animals[index];
+            return genders[randomGender];
         }
+
+        public List<Animal> CreateRandomAnimals()
+        {
+            List<Animal> animals = new List<Animal>();
+
+            int minSizeList = 3;
+            int maxSizeList = 7;
+            int randomSize = Utils.GetRandomValue(minSizeList, maxSizeList);
+
+            int randomIndex = Utils.GetRandomValue(_animals.Count);
+
+            for (int i = 0; i < randomSize; i++)
+            {
+
+                animals.Add(_animals[randomIndex]);
+            }
+
+            return animals;
+        }
+
     }
 
     class Aviary
@@ -81,24 +101,12 @@ namespace Зоопарк
 
     class AviaryFaсtory
     {
-        private AnimalFactory _animalFactory = new AnimalFactory();
-
-        public Aviary CreateRandomAnimals()
+        public Aviary Create()
         {
+            AnimalFactory animalFactory = new AnimalFactory();
             List<Animal> animals = new List<Animal>();
 
-            //int animalsCount = 6;
-            int randomIndex = Utils.GetRandomValue(_animalFactory.AnimalsCount);
-
-            int minAvairySize = 3;
-            int maxAvairySize = 7;
-            int avairySize = Utils.GetRandomValue(minAvairySize, maxAvairySize);
-
-            for (int i = 0; i < avairySize; i++)
-            {
-                Animal animal = _animalFactory.CreateRandom(randomIndex/*, out animalsCount*/);
-                animals.Add(animal);
-            }
+            animals = animalFactory.CreateRandomAnimals();
 
             return new Aviary(animals);
         }
@@ -106,19 +114,20 @@ namespace Зоопарк
 
     class Zoo
     {
-        private AviaryFaсtory _aviaryFaсtory = new AviaryFaсtory();
 
         private List<Aviary> _aviarys = new List<Aviary>();
 
         public void CreateAviarys()
         {
+            AviaryFaсtory aviaryFaсtory = new AviaryFaсtory();
+
             int minRandomValueAviarys = 3;
             int maxRandomValueAviarys = 7;
             int randomNumberAviarys = Utils.GetRandomValue(minRandomValueAviarys, maxRandomValueAviarys);
 
             for (int i = 0; i < randomNumberAviarys; i++)
             {
-                _aviarys.Add(_aviaryFaсtory.CreateRandomAnimals());
+                _aviarys.Add(aviaryFaсtory.Create());
             }
         }
 
